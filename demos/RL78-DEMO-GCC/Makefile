@@ -1,0 +1,108 @@
+##############################################################################
+# Build global options
+# NOTE: Can be overridden externally.
+#
+
+# Compiler options here.
+ifeq ($(USE_OPT),)
+  USE_OPT = -O2 -Wall -std=gnu99 -funsigned-char -fshort-enums -Wswitch -Wunused-variable -Wno-pointer-sign -ffunction-sections
+endif
+
+
+# Enable this if you want the linker to remove unused code and data
+ifeq ($(USE_LINK_GC),)
+  USE_LINK_GC = yes
+endif
+
+
+##############################################################################
+# Project, sources and paths
+#
+
+# Define project name here
+PROJECT = rl78
+
+# Imported source files and paths
+CHIBIOS = ../..
+ALGS = ../../src/algorithms
+
+include $(CHIBIOS)/os/hal/platforms/RL78/platform.mk
+include $(CHIBIOS)/os/hal/hal.mk
+include $(CHIBIOS)/os/ports/GCC/RL78/port.mk
+include $(CHIBIOS)/os/kernel/kernel.mk
+include $(CHIBIOS)/boards/RENESAS_YRPBRL78G13/board.mk
+include $(CHIBIOS)/test/test.mk
+
+# Define linker script file here
+LDSCRIPT= $(PORTINC)/R5F100xE/ld/R5F100xE.ld
+
+# C sources that can be compiled in ARM or THUMB mode depending on the global
+# setting.
+CSRC = $(PORTSRC) \
+       $(KERNSRC) \
+       $(TESTSRC) \
+       $(HALSRC) \
+       $(PLATFORMSRC) \
+       $(BOARDSRC) \
+       main.c \
+       $(CHIBIOS)/os/various/syscalls.c 
+       
+# C++ sources that can be compiled in ARM or THUMB mode depending on the global
+# setting.
+CPPSRC =
+
+# C sources to be compiled in ARM mode regardless of the global setting.
+# NOTE: Mixing ARM and THUMB mode enables the -mthumb-interwork compiler
+#       option that results in lower performance and larger code size.
+ACSRC =
+
+# C++ sources to be compiled in ARM mode regardless of the global setting.
+# NOTE: Mixing ARM and THUMB mode enables the -mthumb-interwork compiler
+#       option that results in lower performance and larger code size.
+ACPPSRC =
+
+# C sources to be compiled in THUMB mode regardless of the global setting.
+# NOTE: Mixing ARM and THUMB mode enables the -mthumb-interwork compiler
+#       option that results in lower performance and larger code size.
+TCSRC =
+
+# C sources to be compiled in THUMB mode regardless of the global setting.
+# NOTE: Mixing ARM and THUMB mode enables the -mthumb-interwork compiler
+#       option that results in lower performance and larger code size.
+TCPPSRC =
+
+# List ASM source files here
+ASMSRC = $(PORTASM)
+
+INCDIR = $(PORTINC) $(KERNINC) $(TESTINC) \
+         $(HALINC) $(PLATFORMINC) $(BOARDINC) \
+         $(CHIBIOS)/os/various
+
+##############################################################################
+# Compiler settings
+#
+MCU  = RL78
+
+TRGT = rl78-elf-
+CC   = $(TRGT)gcc 
+CPPC = $(TRGT)g++
+
+# Enable loading with g++ only if you need C++ runtime support.
+# NOTE: You can use C++ even without C++ support if you are careful. C++
+#       runtime support makes code size explode.
+LD   = $(TRGT)gcc 
+CP   = $(TRGT)objcopy
+AS   = $(TRGT)gcc -x assembler-with-cpp
+OD   = $(TRGT)objdump
+HEX  = $(CP) -O ihex
+BIN  = $(CP) -O binary
+
+# Define C warning options here
+CWARN = -Wall -Wextra -Wstrict-prototypes
+
+# Define C++ warning options here
+CPPWARN = -Wall -Wextra
+
+
+##############################################################################   
+include $(CHIBIOS)/os/ports/GCC/RL78/rules.mk
