@@ -14,7 +14,7 @@ SRC        = $(CSRC)$(CPPSRC)
 # Object files groups
 COBJS   = $(CSRC:.c=.o)
 CPPOBJS = $(CPPSRC:.cpp=.o)
-ASMOBJS = $(ASMSRC:.S=.o)
+#ASMOBJS = $(ASMSRC:.S=.o)
 OBJS   = $(ASMOBJS) $(COBJS) $(CPPOBJS)
 
 # Paths
@@ -33,7 +33,6 @@ ODFLAGS   = -x --syms
 ASFLAGS = $(MCFLAGS) -Wa,-amhls=$(<:.s=.lst) $(ADEFS)
 CPFLAGS = $(MCFLAGS) $(OPT) $(COPT) $(WARN) -Wa,-alms=$(<:.c=.lst) $(DEFS)
 
- #    LDFLAGS = $(MCFLAGS) -T$(LDSCRIPT) -Wl,--gc-sections -nostartfiles -Wl,--relax, -Map=$(PROJECT).map $(LLIBDIR)
 	LDFLAGS = -Wl,-Map=$(PROJECT).map -Wl,--relax -Wl,--gc-sections -nostartfiles
 
 	
@@ -52,14 +51,14 @@ MAKE_ALL_RULE_HOOK:
 $(CPPOBJS) : %.o : %.cpp
 	@echo
 	$(CPPC) -c $(CPPFLAGS) -I . $(IINCDIR) $< -o $@
-
+	
 $(COBJS) : %.o : %.c
 	@echo
 	$(CC) -c $(CPFLAGS) -I . $(IINCDIR) $< -o $@
 
-$(ASMOBJS) : %.o : %.s
+$(ASMOBJS) : 
 	@echo
-	$(AS) -c $(ASFLAGS) -I . $(IINCDIR) $< -o $@
+	$(AS) -c  -o 
 
 %elf: $(OBJS)
 	@echo
@@ -83,6 +82,6 @@ clean:
 #
 # Include the dependency files, should be the last of the makefile
 #
--include $(shell mkdir .dep 2>/dev/null) $(wildcard .dep/*)
+include $(shell mkdir .dep 2>/dev/null) $(wildcard .dep/*)
 
 # *** EOF ***
