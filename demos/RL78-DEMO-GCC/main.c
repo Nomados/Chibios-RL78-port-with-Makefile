@@ -17,13 +17,15 @@
 #include "ch.h"
 #include "hal.h"
 #include "test.h"
+#include "iodefine.h"
+#include "iodefine_ext.h"
 
 /*
 To summarize, user can use following set of options (command line) to achieve,
 a. maximum code size optimization
 --------------------------------------------------------------------------------------------------------
         -Os                        -fno-function-cse             -funit-at-a-time       -falign-jumps
-        -fdata-sections        -ffunction-sections           –Wl,--gc-sections
+        -fdata-sections        -ffunction-sections           ï¿½Wl,--gc-sections
         AND    < target specific options >
 --------------------------------------------------------------------------------------------------------
 b. maximum code speed optimization
@@ -39,7 +41,8 @@ b. maximum code speed optimization
 static WORKING_AREA(waThread1, 128);
 static msg_t Thread1(void *arg) {
 
-  while (TRUE) {
+  while (TRUE)
+  {
     P7_bit.no7 = 0;
     chThdSleepMilliseconds(50);
     P7_bit.no7 = 1;
@@ -52,29 +55,31 @@ static msg_t Thread1(void *arg) {
 /* Main and generic code.                                                    */
 /*===========================================================================*/
 
-void led_init(void) {
-
-/*  uint32_t i;*/
-
+void led_init(void)
+{
   // led port init
   PM7_bit.no7 = 0;
-  P7_bit.no7 = 0;
+  P7_bit.no7  = 0;
   chThdSleepMilliseconds(1000);
-/*
-  for (i=0; i<2000000; i++)
-  {
-    asm volatile("nop\n\t");
-  }
-*/
-  P7_bit.no7 = 1;
+  P7_bit.no7  = 1;
   chThdSleepMilliseconds(1000);
-/*
-  for (i=0; i<2000000; i++)
-  {
-    asm volatile("nop\n\t");
-  }
-*/
 }
+
+void buttons_init(void)
+{
+    /* Connect internal pull-ups on switch pins P7_6 */
+	PU7_bit.no6 = 1;
+	/* Connect internal pull-ups on switch pins P3_1 SW2 */
+	PU3_bit.no1 = 1;
+
+
+
+	/* Set switch pin modes as inputs */
+	PM7_bit.no6 = 1;
+	/* Set switch pin modes as inputs */
+	PM3_bit.no1 = 1;
+}
+
 
 /*
  * Application entry point.
@@ -97,15 +102,16 @@ int main(void) {
    * Leds initialization.
    */
   led_init();
+  buttons_init();
+
 
   chThdCreateStatic(waThread1, sizeof(waThread1), NORMALPRIO, Thread1, NULL);
 
-  /*
-   * Normal main() thread activity, in this demo it does nothing except
-   * sleeping in a loop.
-   */
-  TestThread(&SD2);
-  while (TRUE) {
+
+  while (TRUE)
+  {
+    if ((P3_bit.no1 == 0) || (P7_bit.no6 == 0))
+	TestThread(&SD2);
     chThdSleepMilliseconds(100);
   }
   return 0;
