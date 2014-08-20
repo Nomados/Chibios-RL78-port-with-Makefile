@@ -4,9 +4,6 @@
 OPT = $(USE_OPT)
 COPT = $(USE_COPT)
 CPPOPT = $(USE_CPPOPT)
-ifeq ($(USE_LINK_GC),yes)
-  OPT += 
-endif
 
 # Source files groups
 SRC        = $(CSRC)$(CPPSRC)
