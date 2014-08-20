@@ -29,7 +29,7 @@ MCFLAGS =
 ODFLAGS   = -x --syms
 ASFLAGS = $(MCFLAGS) -Wa,-amhls=$(<:.S=.lst) $(ADEFS)
 CPFLAGS = $(MCFLAGS) $(OPT) $(COPT) $(WARN) -Wa,-alms=$(<:.c=.lst) $(DEFS)
-
+ 
 LDFLAGS = -nostartfiles -Wl,--relax -Wl,--gc-sections -T $(LDSCRIPT)
 
 #
