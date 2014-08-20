@@ -5,7 +5,8 @@
 
 # Compiler options here.
 ifeq ($(USE_OPT),)
-  USE_OPT = -O2 -ggdb -fomit-frame-pointer -Wall -std=gnu99 -funsigned-char -fshort-enums -Wswitch -Wunused-variable -Wno-pointer-sign -ffunction-sections
+  USE_OPT = -fomit-frame-pointer -Wall -std=gnu99 -funsigned-char -fshort-enums -Wswitch -Wunused-variable -Wno-pointer-sign -ffunction-sections -O2 
+#  USE_OPT = -O3 -fno-function-cse -funit-at-a-time -funroll-loops
 endif
 
 # C specific options here (added to USE_OPT).
@@ -94,8 +95,7 @@ TCSRC =
 TCPPSRC =
 
 # List ASM source files here
-ASMSRC = $(PORTASM) \
-		crt0.S
+ASMSRC = $(PORTINC)/crt0.S
 
 INCDIR = $(PORTINC) $(KERNINC) $(TESTINC) \
          $(HALINC) $(PLATFORMINC) $(BOARDINC) \
